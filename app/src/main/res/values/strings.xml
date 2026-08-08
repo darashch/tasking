@@ -3,5 +3,10 @@
     <string name="new_task">New Task</string>
     <string name="sort_list">Sort List</string>
     <string name="search_task">Search Task</string>
-    <string name="delete_task">Delete Task</string>"
+    <string name="delete_task">Delete Task</string>
+    <string name="create_new_task">Create new task</string>
+    <string name="enter_task_name">Enter task name</string>
+    <string name="btn_cancel_create_task">Cancel</string>
+    <string name="btn_create_task">Create</string>
+    <string name="empty_task_list">No tasks to show. Try adding some!</string>
 </resources>
