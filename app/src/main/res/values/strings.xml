@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Tasking</string>
+    <string name="new_task">New Task</string>
+    <string name="sort_list">Sort List</string>
+    <string name="search_task">Search Task</string>
+    <string name="delete_task">Delete Task</string>"
 </resources>
