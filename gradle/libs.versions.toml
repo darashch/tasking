@@ -11,7 +11,6 @@ composeBom = "2026.02.01"
 kotlinKsp = "2.3.10"
 hilt = "2.60.1"
 room = "3.0.1"
-roomKtx = "2.8.4"
 hiltNavigationCompose = "1.4.0"
 
 [libraries]
@@ -33,7 +32,6 @@ android-hilt = { module =  "com.google.dagger:hilt-android", version.ref = "hilt
 android-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 androidx-room-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room" }
-androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 [plugins]
