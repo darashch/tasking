@@ -9,4 +9,8 @@
     <string name="btn_cancel_create_task">Cancel</string>
     <string name="btn_create_task">Create</string>
     <string name="empty_task_list">No tasks to show. Try adding some!</string>
+    <string name="sort_alphabetically_az">Sort alphabetically: A to Z</string>
+    <string name="sort_alphabetically_za">Sort alphabetically: Z to A</string>
+    <string name="sort_creation_asc">Sort by creation date: Ascending</string>
+    <string name="sort_creation_desc">Sort by creation date: Descending</string>
 </resources>

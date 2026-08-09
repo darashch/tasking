@@ -13,7 +13,8 @@ import com.darashch.tasking.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListAppBar(
-    onNewTaskClick: () -> Unit
+    onNewTaskClick: () -> Unit,
+    onSortTaskListClick: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -22,7 +23,7 @@ fun TaskListAppBar(
         actions = {
             IconButton(
                 onClick = {
-                    // TODO: Implement "Sort Task List" functionality
+                    onSortTaskListClick()
                 }
             ) {
                 Icon(
@@ -31,7 +32,9 @@ fun TaskListAppBar(
                 )
             }
             IconButton(
-                onClick = onNewTaskClick
+                onClick = {
+                    onNewTaskClick()
+                }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.add),
