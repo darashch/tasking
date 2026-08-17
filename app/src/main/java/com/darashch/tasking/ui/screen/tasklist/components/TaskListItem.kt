@@ -26,7 +26,9 @@ import com.darashch.tasking.R
 @Composable
 fun TaskListItem(
     taskName: String,
-    isCompleted: Boolean
+    isCompleted: Boolean,
+    onCompleteTask: (String) -> Unit,
+    onDeleteTask: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -46,7 +48,8 @@ fun TaskListItem(
             Checkbox(
                 checked = isCompleted,
                 onCheckedChange = {
-                    // TODO: Implement "Task Complete" functionality
+                    onCompleteTask(taskName)
+                    // TODO: Implement "Task Complete" functionality using Room Databse
                 }
             )
             Text(
@@ -59,7 +62,8 @@ fun TaskListItem(
             )
             IconButton(
                 onClick = {
-                    // TODO: Implement "Delete Task" functionality
+                    onDeleteTask(taskName)
+                    // TODO: Implement "Delete Task" functionality using Room database
                 }
             ) {
                 Icon(
