@@ -12,13 +12,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.darashch.tasking.R
+import kotlinx.coroutines.android.awaitFrame
 
 @Composable
 fun NewTaskDialog(
@@ -35,8 +42,16 @@ fun NewTaskDialog(
     onCreateTask: () -> Unit,
     onCancelTaskCreation: () -> Unit
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(focusRequester) {
+        awaitFrame()
+        focusRequester.requestFocus()
+    }
+
     Dialog(
         onDismissRequest = {
+            newTaskState.clearText()
             onDismissRequest()
         }
     ) {
@@ -60,7 +75,9 @@ fun NewTaskDialog(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     state = newTaskState,
                     placeholder = {
                         Text(text = stringResource(R.string.enter_task_name))
@@ -74,6 +91,7 @@ fun NewTaskDialog(
                 ) {
                     TextButton(
                         onClick = {
+                            newTaskState.clearText()
                             onCancelTaskCreation()
                         }
                     ) {
@@ -83,6 +101,7 @@ fun NewTaskDialog(
                     TextButton(
                         onClick = {
                             onCreateTask()
+                            newTaskState.clearText()
                         }
                     ) {
                         Text(text = stringResource(R.string.btn_create_task))
