@@ -15,19 +15,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darashch.tasking.R
 import com.darashch.tasking.ui.screen.tasklist.components.NewTaskDialog
-import com.darashch.tasking.ui.screen.tasklist.components.SortOption
 import com.darashch.tasking.ui.screen.tasklist.components.SortTaskListBottomSheet
 import com.darashch.tasking.ui.screen.tasklist.components.TaskListAppBar
 import com.darashch.tasking.ui.screen.tasklist.components.TaskListItem
@@ -37,16 +34,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskListScreen() {
-    var showNewTaskDialog by remember { mutableStateOf(false) }
-    val taskList = remember { mutableStateListOf<Pair<String, Boolean>>() } // NOTE: Temporary variable for task list
-    val newTaskName = rememberTextFieldState() // NOTE: Temporary variable for task name
-
-    // NOTE: Temporary variables for sorting selection
-    var showSortTaskListSheet by remember { mutableStateOf(false) }
-    var selectedSortOption by remember { mutableStateOf(SortOption.ALPHABETICALLY_ASC) }
+fun TaskListScreen(
+    taskListViewModel: TaskListViewModel = viewModel()
+) {
+    val newTaskName = rememberTextFieldState()
     val sortTaskListBottomSheetState = rememberModalBottomSheetState()
     val sortTaskListBottomSheetScope = rememberCoroutineScope()
+
+    val uiState by taskListViewModel.uiState.collectAsStateWithLifecycle()
 
 
     Scaffold(
@@ -55,10 +50,10 @@ fun TaskListScreen() {
         topBar = {
             TaskListAppBar(
                 onNewTaskClick = {
-                    showNewTaskDialog = true
+                    taskListViewModel.openNewTaskDialog()
                 },
                 onSortTaskListClick = {
-                    showSortTaskListSheet = true
+                    taskListViewModel.openSortTaskListSheet()
                 }
             )
         }
@@ -70,7 +65,7 @@ fun TaskListScreen() {
         ) {
             TaskListSearch()
 
-            if (taskList.isEmpty())
+            if (uiState.taskList.isEmpty())
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,48 +78,54 @@ fun TaskListScreen() {
                     modifier = Modifier
                         .verticalScroll(state = rememberScrollState())
                 ) {
-                    taskList.forEach { task ->
+                    uiState.taskList.forEach { task ->
                         TaskListItem(
                             taskName = task.first,
-                            isCompleted = task.second
+                            isCompleted = task.second,
+                            onCompleteTask = {
+                                taskListViewModel.onCompleteTask(task.first)
+                            },
+                            onDeleteTask = {
+                                taskListViewModel.onDeleteTask(task.first)
+                            }
                         )
                     }
                 }
 
             // "New Task" Dialog
-            if (showNewTaskDialog)
+            if (uiState.showNewTaskDialog)
                 NewTaskDialog(
                     newTaskState = newTaskName,
                     onDismissRequest = {
-                        showNewTaskDialog = false
+                        taskListViewModel.closeNewTaskDialog()
                     },
                     onCreateTask = {
-                        taskList.add(newTaskName.text.toString() to false)
-                        showNewTaskDialog = false
+                        taskListViewModel.addNewTask(newTaskName.text.toString())
+                        taskListViewModel.closeNewTaskDialog()
 
                         // TODO: Implement "New Task" using Room Database
                     },
                     onCancelTaskCreation = {
-                        showNewTaskDialog = false
+                        taskListViewModel.closeNewTaskDialog()
                     }
                 )
 
             // "Sort Task List" Bottom Sheet
-            if (showSortTaskListSheet)
+            if (uiState.showSortTaskListSheet)
                 SortTaskListBottomSheet(
                     bottomSheetState = sortTaskListBottomSheetState,
-                    selectedOption = selectedSortOption,
+                    selectedOption = uiState.selectedSortOption,
                     onDismissRequest = {
-                        showSortTaskListSheet = false
+                        taskListViewModel.closeSortTaskListSheet()
                     },
                     onSelectedSortOption = { selectedOption ->
-                        selectedSortOption = selectedOption
+                        taskListViewModel.onSelectedSortOption(selectedOption)
 
                         sortTaskListBottomSheetScope.launch {
                             sortTaskListBottomSheetState.hide()
                         }.invokeOnCompletion {
                             if (!sortTaskListBottomSheetState.isVisible) {
-                                showSortTaskListSheet = false
+                                taskListViewModel.closeSortTaskListSheet()
                             }
                         }
                     }
