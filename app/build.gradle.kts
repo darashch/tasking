@@ -49,6 +49,10 @@ dependencies {
     implementation(libs.android.hilt)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.room.runtime)
+
+    // View Model
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
